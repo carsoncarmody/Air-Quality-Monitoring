@@ -1,0 +1,145 @@
+import time
+import board
+import adafruit_scd4x
+
+i2c = board.I2C()
+scd4x = adafruit_scd4x.SCD4X(i2c)
+print("Serial number:", [hex(i) for i in scd4x.serial_number])
+
+scd4x.start_periodic_measurement()
+print("Waiting for first measurement....")
+
+# import standard python modules.
+# import time
+
+# import adafruit dht library.
+
+# import Adafruit IO REST client.
+from Adafruit_IO import Client, Feed
+
+# Delay in-between sensor readings, in seconds.
+# DHT_READ_TIMEOUT = 5
+
+# Pin connected to DHT22 data pin
+# DHT_DATA_PIN = 26
+
+# Set to your Adafruit IO key.
+# Remember, your key is a secret,
+# so make sure not to publish it when you publish this code!
+ADAFRUIT_IO_KEY = 'aio_mBHp06rMV9hkCRW8d2SIKlBdAP5N'
+
+# Set to your Adafruit IO username.
+# (go to https://accounts.adafruit.com to find your username).
+ADAFRUIT_IO_USERNAME = 'Ccarmo'
+
+# Create an instance of the REST client.
+aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
+
+# Set up Adafruit IO Feeds.
+temperature_feed = aio.feeds('temperature')
+humidity_feed = aio.feeds('humidity')
+co2_feed = aio.feeds('co2')
+# Set up DHT22 Sensor.
+# dht22_sensor = Adafruit_DHT.DHT22
+# scd4x = adafruit_scd4x.SCD4X(i2c)
+
+while True:
+        # humidity, temperature, co2 =
+                # Adafruit_SCD4x.read_retry(SCD4X)
+        # if humidity is not None and temperature is not None:
+        if scd4x.data_ready:
+                humidity = scd4x.relative_humidity
+                temperature = scd4x.temperature
+                co2 = scd4x.CO2
+
+                # humidity, temperature, co2 = Adafruit_SCD4x.read_retry(SCD4X)
+                # if humidity is not None and temperature is not None:
+                print('Temp={0:0.1f}*C Humidity={1:0.1f}% CO2={2:0.1f}PPM'.format(tempera>                # Send humidity and temperature and co2 feeds to Adafruit IO
+                temperature = '%.2f'%(temperature)
+                humidity = '%.2f'%(humidity)
+                co2 = '%.2f'%(co2)
+                aio.send_data(temperature_feed.key, str(temperature))
+                aio.send_data(humidity_feed.key, str(humidity))
+                aio.send_data(co2_feed.key, str(co2))
+                time.sleep(15)
+        else:
+		print('Failed to get SCD4x Reading, trying again') # ', 5, 'seconds')
+                # Timeout to avoid flooding Adafruit IO
+                # time.sleep(5)
+
+
+
+
+
+# BACKUP CODE:
+
+
+import time
+import board
+import adafruit_scd4x
+
+i2c = board.I2C()
+scd4x = adafruit_scd4x.SCD4X(i2c)
+print("Serial number:", [hex(i) for i in scd4x.serial_number])
+
+scd4x.start_periodic_measurement()
+print("Waiting for first measurement....")
+
+# import standard python modules.
+# import time
+
+# import adafruit dht library.
+
+# import Adafruit IO REST client.
+from Adafruit_IO import Client, Feed
+
+# Delay in-between sensor readings, in seconds.
+# DHT_READ_TIMEOUT = 5
+
+# Pin connected to DHT22 data pin
+# DHT_DATA_PIN = 26
+
+# Set to your Adafruit IO key.
+# Remember, your key is a secret,
+# so make sure not to publish it when you publish this code!
+ADAFRUIT_IO_KEY = 'aio_mBHp06rMV9hkCRW8d2SIKlBdAP5N'
+
+# Set to your Adafruit IO username.
+# (go to https://accounts.adafruit.com to find your username).
+ADAFRUIT_IO_USERNAME = 'Ccarmo'
+
+# Create an instance of the REST client.
+aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
+
+# Set up Adafruit IO Feeds.
+temperature_feed = aio.feeds('temperature')
+humidity_feed = aio.feeds('humidity')
+co2_feed = aio.feeds('co2')
+# Set up DHT22 Sensor.
+# dht22_sensor = Adafruit_DHT.DHT22
+# scd4x = adafruit_scd4x.SCD4X(i2c)
+
+while True:
+        # humidity, temperature, co2 =
+                # Adafruit_SCD4x.read_retry(SCD4X)
+        # if humidity is not None and temperature is not None:
+        if scd4x.data_ready:
+                humidity = scd4x.relative_humidity
+                temperature = scd4x.temperature
+                co2 = scd4x.CO2
+
+                # humidity, temperature, co2 = Adafruit_SCD4x.read_retry(SCD4X)
+                # if humidity is not None and temperature is not None:
+                print('Temp={0:0.1f}*C Humidity={1:0.1f}% CO2={2:0.1f}PPM'.format(temperature, humidity, co2))
+                # Send humidity and temperature and co2 feeds to Adafruit IO
+                temperature = '%.2f'%(temperature)
+                humidity = '%.2f'%(humidity)
+                co2 = '%.2f'%(co2)
+                aio.send_data(temperature_feed.key, str(temperature))
+                aio.send_data(humidity_feed.key, str(humidity))
+                aio.send_data(co2_feed.key, str(co2))
+                time.sleep(15)
+        else:
+                print('Failed to get SCD4x Reading, trying again') # ', 5, 'seconds')
+                # Timeout to avoid flooding Adafruit IO
+                # time.sleep(5)
